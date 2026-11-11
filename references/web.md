@@ -62,11 +62,11 @@ Webhooks, cron, and real-time features are included only when the product uses t
 A public marketing or content site needs:
 
 - A real document title and description strategy
-- A canonical host once a domain exists
+- A canonical host once a domain exists. In metadata, redirects, and scripts, use `https://www.example.com`. Omit `www` when the user or the existing config names another host, or when another subdomain is the host instead of `www`
 - Usable empty, loading, and error states only where the site is dynamic
 - Basic metadata and a sitemap path appropriate to the framework
 
-Do not bolt on an account system for SEO. If the repository already has a web-presence or SEO audit workflow, use it for the detailed discoverability pass instead of inventing a second one.
+Do not bolt on an account system for SEO. If [web-presence-audit](https://www.skills.sh/creative-lid/web-presence-audit/web-presence-audit) is installed or the user includes it for this run, use that skill for the public discoverability pass. Install rules are in [companion-skills.md](companion-skills.md).
 
 ## Hosting decision
 

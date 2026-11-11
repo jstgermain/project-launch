@@ -2,9 +2,11 @@
 
 Security is part of the launch plan. It is not a pile of invented vulnerabilities.
 
-If the repository already contains a security-audit skill, a `docs/security-audit.md` report, or another security-audit workflow, use that workflow for findings. Record a checklist pointer to it. Do not run a second, competing audit or restate its findings as if this skill discovered them.
+If the repository already contains a security-audit skill, a `docs/security-audit.md` report, or the user includes [security-audit](https://www.skills.sh/creative-lid/security-audit/security-audit) for this run, use that workflow for findings. Record a checklist pointer to it. Do not run a second, competing audit or restate its findings as if this skill discovered them. Install rules are in [companion-skills.md](companion-skills.md).
 
 If no security workflow exists, record the launch tasks below that match the shape. Report a defect only when you can point at it. Absence of a scanner is a gap in tooling, not proof of a vulnerability.
+
+When enterprise, regulated, public-sector, E2EE, SSO/SCIM, MDM, compliance-evidence, contractual-support, or procurement requirements are in scope, also load [enterprise-readiness.md](enterprise-readiness.md). This security reference covers baseline product controls. The enterprise reference covers advanced product capabilities, assurance evidence, external assessments, and commercial dependencies.
 
 ## Secrets
 
@@ -32,6 +34,9 @@ Use only the rows that apply.
 | Rate limiting | Login, password reset, and other abuse-prone routes have a limit when those routes exist |
 | Least privilege | Cloud and store credentials used by CI can do the deploy, not everything in the account |
 | SAST | Optional. If a scanner is already configured, keep it. Do not add three scanners to a new repo |
+| Encryption claims | TLS and encryption at rest are named accurately. E2EE is claimed only when the operator cannot access protected plaintext under the documented threat model |
+| Enterprise identity | SSO and SCIM tenant boundaries, role mapping, deprovisioning, and break-glass access are tested when those capabilities are required |
+| Audit evidence | A control has scoped, dated evidence and an owner. Policy text alone is not operating evidence |
 
 ## Existing tooling
 
@@ -39,6 +44,6 @@ Note Dependabot, Renovate, CodeQL, or a dependency audit workflow when you see i
 
 ## Out of scope
 
-Do not claim the application is secure because the checklist is complete. Do not label the project compliant with a regulation or a store policy. Do not exploit a suspected issue. Do not add attack procedures, payloads, or proof-of-concept code.
+Do not claim the application is secure because the checklist is complete. Do not label the project compliant, certified, or audit-ready because controls or documents exist. Do not exploit a suspected issue. Do not add attack procedures, payloads, or proof-of-concept code.
 
 When a formal security review is warranted and no security skill is present, say so as a recommendation. Do not pretend this checklist was that review.

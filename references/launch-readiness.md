@@ -14,7 +14,7 @@ Include when a web app or site ships:
 - Tests the project already has are part of the gate, not a new framework
 - Production environment variable names are listed and stored in the host
 - Production database exists and the migration workflow is documented, when a database is in scope
-- Domain, canonical host, redirects, and TLS
+- Domain, canonical host, redirects, and TLS. The public site URL includes `www` unless a different host or another subdomain is already specified
 - Production auth settings and production payment mode, when those features exist
 - Error monitoring and a rollback path
 - Privacy policy and terms links when the site collects personal data or takes payment
@@ -32,6 +32,9 @@ Include for a native iOS launch:
 - Screenshots, metadata, privacy answers, and support URL
 - TestFlight on a build the team has actually installed
 - Review notes and a demo path that does not require the reviewer to pay, when the app has accounts
+- Primary flows verified on the smallest supported iPhone, with larger Dynamic Type, safe-area placement, scrolling sheets, keyboard avoidance, and any camera/photo/crop interactions on a physical device
+- Any first-run or update setup flow has Cancel or Back behavior, resumes incomplete setup, distinguishes an explicit skip from completion, and leaves a visible route to finish later
+- CI distinguishes TestFlight from App Review, hard-gates both on applicable checks, and blocks replacement of an existing review submission without explicit per-release consent
 
 ## Android release
 
@@ -43,6 +46,9 @@ Include for a native Android launch:
 - Icon, screenshots, feature graphic, Data safety, and privacy policy
 - Internal or closed testing on a build the team has installed
 - Production track and rollout plan
+- Primary flows verified on a compact physical device with both gesture and three-button navigation, system insets, scrolling sheets, keyboard avoidance, responsive actions, and any camera/photo/crop interactions
+- Any first-run or update setup flow has Cancel or Back behavior, resumes incomplete setup, distinguishes an explicit skip from completion, and leaves a visible route to finish later
+- CI distinguishes internal testing from production, hard-gates both on applicable checks, and fails closed when production signing or Play credentials are missing
 
 ## Privacy and legal
 
@@ -72,6 +78,14 @@ Include only when the user is preparing a real production launch or the product 
 
 Do not invent an on-call rotation or a status page for a first marketing site unless the user asked.
 
+## Enterprise customer readiness
+
+Include only when a contracted or target customer requires enterprise review. Load [enterprise-readiness.md](enterprise-readiness.md).
+
+Distinguish product launch from customer approval. The application may be deployable while a customer rollout is blocked by SSO/SCIM testing, managed-device validation, penetration-test remediation, evidence collection, legal redlines, support commitments, or procurement onboarding.
+
+For every blocker, record the requirement source, owner, dependency, target date, and evidence needed to close it. Do not promise a procurement date from engineering estimates alone. Do not call a security questionnaire, policy set, or internal test an independent audit.
+
 ## Readiness output
 
 Group gaps by blocker:
@@ -79,6 +93,7 @@ Group gaps by blocker:
 1. Blocks launch: missing production data path, broken release build, no admin authorization, store billing required but absent, secrets committed
 2. Blocks store review: missing privacy answers, icons, or review access
 3. Should be done before traffic: monitoring, backups, domain TLS
-4. Can follow launch: polish, extra test layers, staged rollout
+4. Blocks contracted customer launch: unverified enterprise identity, E2EE design, managed-device behavior, audit evidence, legal commitment, or procurement dependency
+5. Can follow launch: polish, extra test layers, staged rollout
 
 Say which group each gap is in. Do not collapse them into a score.

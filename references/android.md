@@ -19,8 +19,13 @@ Account for:
 - `minSdk` and `targetSdk` set deliberately, not left as an unexamined sample
 - Debug and Release build types
 - Development versus production configuration when the app calls a backend. Build types or flavors are both fine. Match the project
+- A public website URL includes `www` unless another host or subdomain is already specified. An `api`, `app`, or `staging` host stays as that subdomain
 - Secrets out of the repo. Local properties or env names that Git ignores. No store passwords in Gradle source
 - JDK version recorded in the README or toolchain file
+- Edge-to-edge and system insets handled deliberately. Fixed actions, full-screen dialogs, and bottom sheets stay above status bars, cutouts, gesture areas, and legacy three-button navigation
+- Variable-height sheets and forms scroll on compact devices and keep focused fields and actions above the on-screen keyboard
+- Primary actions use responsive layouts that keep labels legible on narrow phones instead of wrapping into unusable controls
+- Camera, document-scan, crop, and photo-picker flows are verified on a physical device when the product uses them. Persist the accepted media result, show it back to the user, and provide replace/retry behavior
 
 ## Signing
 

@@ -6,6 +6,22 @@ Most items are `EXTERNAL CONSOLE` or `NEEDS USER ACTION`. Do not mark them compl
 
 Policy-sensitive billing is `NEEDS VERIFICATION`. Do not fetch vendor policy pages. Do not tell the user that a web payment provider satisfies store rules.
 
+When repository-driven release automation exists or is requested, load [store-automation.md](store-automation.md). Keep TestFlight, App Review, Play testing, and Play production as distinct destinations, and require explicit replacement consent before cancelling an existing Apple review submission.
+
+## Release identity and public status
+
+Include release-status automation only when the product has a public What's New page, store-availability UI, or another feature that must reflect review and release state.
+
+- Treat iOS and Android marketing versions and build identifiers as independent values, even when the first releases happen to match. A platform-specific fix or review delay will make them diverge.
+- Pair public status with the platform and exact version, such as `iOS 1.4 · In review` and `Android 1.1.0 · Released`. Do not put one shared version or review badge on a cross-platform update.
+- Set `in-review` only after that exact version was submitted. Set `released` only after the store reports that exact version as publicly available. Keep transitions monotonic; an automated check must never move a released version back to in-review.
+- When the product already has an authenticated backend, Apple can send signed app-version state notifications to it. Verify the signature against the raw request body, fetch the exact App Store Connect version, and make the handler idempotent. Keep a low-frequency reconciliation job for missed events.
+- Google Play does not provide an app-review or publishing webhook. Real-time developer notifications belong to Play Billing and must not be used as release events. Read the official release lifecycle for the exact package and production track instead.
+- Reconcile only entries that are pending. The job should read local or database state first and exit before calling a store when nothing is in review. Prefer an existing scheduler or CI workflow at a conservative cadence, such as hourly with backoff.
+- A static or local-only product should not gain a database and API solely to receive release notifications. Use its existing CI scheduler to update tracked release content, then deploy the site. If the product does not display release status, omit this machinery entirely.
+
+Record which system is authoritative. A backend-backed product can store live status in the database and use checked-in content as fallback. A static site can keep release metadata in git and let an authenticated workflow update only the status fields.
+
 ## Apple Developer and App Store Connect
 
 Include for native iOS:
@@ -15,7 +31,7 @@ Include for native iOS:
 - Sign in with Apple when the iOS app offers third-party social login. Confirm the current platform rule before shipping. Mark it `NEEDS VERIFICATION` rather than treating it as legal advice
 - App Store Connect app record, bundle id, and SKU
 - Name, subtitle, categories, age rating
-- Privacy policy URL, support URL, and marketing URL when the product has a site
+- Privacy policy URL, support URL, and marketing URL when the product has a site. Use the `www` host unless the user or the app already specifies another host or subdomain
 - App privacy disclosures that match actual data collection
 - Screenshots and preview video only if the listing uses video
 - Review contact and demo-account notes, with no real customer password written into the repo
@@ -42,7 +58,7 @@ Include for native Android:
 - Application record and package name matching `applicationId`
 - Store listing, category, and content rating
 - Data safety form matching actual collection
-- Privacy policy URL
+- Privacy policy URL on the `www` host, unless another host or subdomain is already specified
 - Screenshots and a feature graphic
 - Internal testing, then closed testing. Open testing only if the user wants it
 - Production track and staged rollout when they are ready to release that way

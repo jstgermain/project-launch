@@ -31,7 +31,17 @@ When no host exists, recommend one and explain why in a sentence. Do not offer a
 
 Include for a public product.
 
-Account for domain ownership, DNS host, www and apex strategy, TLS, redirects, one canonical hostname, and the verification records the host or other vendors require.
+Account for domain ownership, DNS host, TLS, redirects, one canonical hostname, and the verification records the host or other vendors require.
+
+The canonical website host includes `www`: `https://www.example.com`. Use that host in scripts, app config, canonical tags, sitemaps, environment examples, and any URL the skill writes.
+
+Omit `www` only in these cases:
+
+- The user specifies a different host.
+- The repository already documents a different canonical host. Keep it.
+- Another subdomain stands in for `www`, such as `app.example.com`, `api.example.com`, or `staging.example.com`. Use that subdomain as given. Do not write `www.app.example.com`.
+
+Send `https://example.com` to `https://www.example.com` when `www` is canonical. Do the same for plain HTTP. Do not add `www` to localhost, a host the platform assigns for previews, or a vendor API endpoint.
 
 Include SPF, DKIM, and DMARC only when the product sends email.
 
@@ -117,9 +127,28 @@ Do not design a multi-vendor observability platform for a new product. Name wher
 
 Include for scheduled or queued work the product actually needs. Prefer the web host's scheduler or a single worker over a new queue cluster. Document how a job is invoked in production and how it authenticates to the database. A route with no authentication is not a cron endpoint.
 
+For external lifecycle state, prefer a signed event when the vendor provides the right event and keep a bounded reconciliation job for missed delivery. Make both paths idempotent and scope them to the exact external identifier. A scheduled release-status job should first check whether the product has a pending version and exit before making vendor API calls when it does not.
+
+Do not mistake billing notifications for app-publishing notifications. Do not add a backend solely to receive a webhook when an existing CI schedule can reconcile a static product's small amount of public state.
+
 ## CI
 
 Software projects should consider CI once there is something to build. A useful minimum is install, lint, typecheck, test, and build, using the commands the project already has. Add a migration check when the database has committed migrations. Add native build validation only when a native app is in scope and the team is ready to maintain those runners.
+
+## Safe release orchestration
+
+Include this when the repository deploys more than one surface. Preserve the existing CI provider and release scripts; make the pipeline the authoritative orchestrator instead of duplicating release logic in workflow YAML.
+
+- Every production deploy depends on the applicable build and test jobs. A failed prerequisite stops the release. Do not use `always()` or a permissive condition that turns failure into an intentional skip.
+- Model each destination explicitly: web, API, iOS TestFlight, iOS App Review, Android internal testing, and Android production. A convenience mobile target may mean both testing tracks, but must never silently mean public review.
+- When an API deploy is selected in the same run, web and mobile releases that use that API wait for the API deployment and its live health check. A failed or unhealthy API blocks downstream release jobs.
+- When the API is intentionally not selected, a UI-only web or mobile release may proceed after shared checks. Express this as "API succeeded or was not requested," never "API failed or skipped."
+- A web-only marketing deploy may proceed without an API deployment when the changed surface does not require one, but it still waits for the repository's web gates.
+- Public store releases fail closed when signing or store credentials are missing. Internal testing may be an intentional no-op only when the repository explicitly documents that behavior.
+- Keep concurrency controls per destination so a second release cannot cancel a store upload or production deployment already in progress.
+- Keep screenshots and listing metadata as committed or deterministically generated CI inputs. Validate them before submission; do not depend on CI capturing simulator artwork during a release.
+
+Load [store-automation.md](store-automation.md) when native store automation is applicable.
 
 Do not build a release factory before the project needs it. Do not add a second CI system beside one that already works. Signing secrets stay in the CI secret store, referenced by name.
 

@@ -20,9 +20,12 @@ Account for:
 - A development versus production configuration for the API or feature flags, when the app calls a backend
 - Secrets kept out of the repo. Use build settings or a local config excluded by Git, and document the variable names
 - Capability usage strings in the property list for permissions the app actually requests
-- Associated domains and universal links only when the product uses them
+- Associated domains and universal links only when the product uses them. The website host includes `www` unless another host or subdomain is already specified
 - Keychain when the app stores credentials or tokens
 - App Groups only when an extension or shared container is required
+- Fixed and floating actions placed with SwiftUI safe areas, usually `safeAreaInset`, so controls remain reachable around the home indicator, keyboard, and compact screens
+- Variable-height sheets and forms scroll on the smallest supported iPhone and under larger Dynamic Type sizes
+- Camera, document-scan, crop, and photo-picker flows verified on a physical device when the product uses them. Persist the accepted media result, show it back to the user, and provide replace/retry behavior
 
 Signing team, certificates, and provisioning profiles are usually outside the repo. Mark them `NEEDS VERIFICATION` or `EXTERNAL CONSOLE`. If a certificate or private key is committed, treat that as a security gap. Do not copy the material into the checklist or the chat.
 

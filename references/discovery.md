@@ -15,6 +15,7 @@ Read what exists. Skip folders that are clearly irrelevant once the shape is cle
 - Status files, decision logs, and notes
 - Environment examples. Record names only
 - Deploy, CI, and infrastructure config
+- Security, privacy, compliance, support, procurement, and architecture documents when present
 - Mobile project files when present
 - The last 20 commits, read-only: `git log --oneline -20`
 - `git status`, so you do not plan on top of unrelated uncommitted work
@@ -36,6 +37,7 @@ Use these as clues, then open the files that would confirm them.
 | `ios/`, `*.xcodeproj`, `*.xcworkspace` | Native iOS | App target, bundle id, configurations |
 | `android/`, Gradle Kotlin DSL, `applicationId` | Native Android | Build types, SDK levels, signing approach |
 | React Native, Flutter, or similar | Cross-platform mobile | Keep it. Do not propose a native rewrite |
+| `pubspec.yaml`, Dart entry point, and platform runner folders | Flutter client | Confirm selected targets, SDK constraints, integrations, and per-target build/release evidence |
 | Store billing code | In-app purchases | Products, verification, and restore behavior |
 | Web payment SDK plus server webhook route | Web payments | Signature verification and test vs live separation |
 | `amplify.yml` or Amplify project files | Amplify hosting | Branch and env mapping actually configured |
@@ -45,6 +47,11 @@ Use these as clues, then open the files that would confirm them.
 | Mail or SMS SDK | Messaging | Domain auth or sender registration, not just the package |
 | Upload routes or object-storage SDK | File storage | Private by default, limits, and who can read |
 | Scheduler, queue, or cron config | Background work | Where it runs in production |
+| SAML/OIDC configuration, organization domains, or enterprise auth routes | Enterprise SSO | Tenant isolation, role mapping, enforcement, and tested sign-in |
+| SCIM routes, schemas, or provisioning jobs | Directory provisioning | User/group lifecycle, deprovisioning, idempotency, and audit events |
+| Managed app configuration or MDM documentation | Managed-device support | Supported platforms and behavior on a managed test device |
+| Client-side content encryption and device key storage | Possible E2EE | Threat model, operator access, key lifecycle, recovery, and metadata boundaries |
+| Security questionnaires, audit reports, control mappings, SLAs, or procurement notes | Enterprise readiness | Scope, owner, evidence period, approval, and confidentiality |
 
 A package name alone never marks a capability complete.
 
@@ -65,6 +72,8 @@ Ask nothing the tree already answers.
 
 Budget: one grouped question, then at most one follow-up. The follow-up is allowed only when the answer adds or removes an entire phase. Use a structured question control when the environment has one.
 
+For a product with organizations, B2B customers, sensitive customer data, managed mobile/desktop clients, or an unclear commercial audience, include one screening item in the grouped question: **Will enterprise, regulated, public-sector, or centrally managed customers be in scope now or before the planned launch?** Skip it when the answer is already documented or the product is clearly a marketing site or consumer product. A no answer removes the enterprise phase. A yes answer permits one follow-up listing only the requirements that might apply.
+
 For an empty repository, ask which product this is. Offer only shapes that change the plan:
 
 - Marketing or content site
@@ -77,6 +86,7 @@ For an empty repository, ask which product this is. Offer only shapes that chang
 - Native Android
 - iOS and Android
 - Web plus iOS, Android, or both
+- Flutter across selected mobile, desktop, and/or web targets
 - Monorepo or mixed (ask them to name the parts)
 
 State what that choice already implies. SaaS implies accounts, a database, and a web app. A marketing site implies a public site, hosting, a domain, and no accounts unless they say otherwise. Do not re-ask implied facts.
@@ -85,12 +95,16 @@ Second question, only for the unknowns that remain. Examples:
 
 - Marketing site: no second question. Assume one analytics product and basic production monitoring. The domain can be a placeholder marked `NEEDS USER ACTION`.
 - SaaS: ask whether billing is web subscriptions, and whether email, uploads, or background jobs are required. Recommend monitoring and transactional email if accounts need verification. Say so as an assumption they can correct.
+- Enterprise or regulated SaaS after a yes screening answer: ask whether named buyers require E2EE, SSO, SCIM, managed-device support, formal audit/compliance evidence, contractual support, or procurement artifacts. Group these in one question and ask only about requirements not already documented.
 - Native app: ask whether it sells digital goods or subscriptions, whether it needs accounts and a backend, and whether it needs push. Skip the platform they do not have.
+- Undecided mobile/desktop client: ask whether to use separate platform apps, one Flutter client, or Flutter mobile/desktop with a separate web app, and which targets are required.
 - Web plus native: ask the native questions above. Do not ask them to reconfirm the web stack when a default or an existing stack already applies.
 
 Do not dump a questionnaire that covers every capability. Do not ask about StoreKit without iOS, Play Billing without Android, SPF without email, or an admin theme for a site with no admin.
 
 If the user already described the product, skip the first question and ask only the remaining phase-level gaps.
+
+On a later run, do not repeat the original interview. Ask about the capability the plan just gained. Recommend the default for that capability when the repository does not already have it.
 
 ## New repository foundation
 
@@ -117,6 +131,8 @@ These sketches are binding. Include the listed work. Leave the rest out.
 
 **New SaaS with an admin dashboard.** Web app, server-side admin authorization, accounts, database, separate development and production data, web billing if subscriptions are in scope, email if accounts need mail, monitoring, security, CI, memory. No native apps or store billing unless requested. No microservices by default. The API lives in the web app unless a separate service is justified.
 
+**New enterprise or regulated SaaS.** Start with the SaaS shape, then add only confirmed buyer or regulatory requirements. Treat E2EE as a trust-and-key architecture decision, SSO and SCIM as separate tenant capabilities, MDM as applicable only to managed mobile/desktop clients, and audits, evidence, contracts, and procurement as owned long-lead work. Do not claim compliance or add every enterprise feature preemptively.
+
 **Existing web app missing production infrastructure.** Keep the application. Gap-check environments, production data, migrations, hosting, domain, secrets by name, monitoring, and rollback. Do not rescaffold the app.
 
 **New native iOS app.** Xcode, SwiftUI, Apple Developer, App Store Connect, and memory. Add a backend, database, StoreKit, or push only if the product needs them. No web framework, Android, or Google Cloud by default.
@@ -125,11 +141,19 @@ These sketches are binding. Include the listed work. Leave the rest out.
 
 **New web plus iOS plus Android.** All three surfaces, one shared backend unless the repo already has a different split, separate store billing from web payments, native UI on each mobile platform, push only if requested, memory, monitoring, and security. Do not replace the mobile apps with React Native because the web app uses React.
 
+**New Flutter client.** Use one shared Dart client for only the selected targets, plus platform adapters and target-specific release work. Keep a separately required public website or admin surface separate. Do not also scaffold SwiftUI and Compose product clients. Treat each platform's signing, permissions, privacy, packaging, and store route independently.
+
+**Existing Flutter client.** Keep Flutter. Verify shared code separately from each runner, plugin support, production configuration, native signing, exact platform versions/builds, and store automation. A successful debug session or web build does not prove iOS, Android, macOS, or desktop release readiness.
+
 **Existing mobile app with partial store setup.** Keep the native stack. Mark local engineering from the project files. Mark certificates, store records, screenshots, privacy answers, and review state as external or needs verification unless the repo actually contains them. Do not mark the store listing complete because a bundle id exists.
 
 **Existing app on another database.** Name the database and migration tool in use. Audit environments and the production migration path. Do not move it to Neon or Drizzle.
 
 **Mature repo with its own status system.** Verify memory. Point the narrow active file at the canonical status doc. Do not create a second roadmap or rewrite working agent instructions.
+
+**Plan changed after the first setup.** Read the checklist and decision log. Add only the new capability. A site that later needs saved users gains a database recommendation at that moment. If no database exists, recommend Neon and Drizzle, ask the remaining auth and environment questions, and set Neon up only as part of that change. Do not rebuild the original site, and do not add native, payments, or storage unless that same change requires them.
+
+**Existing product entering enterprise procurement.** Keep the working architecture. Identify the exact buyer requirements, run or reference the security audit, separate reusable product gaps from buyer-specific paperwork, and add owners and lead times for evidence, independent assessment, legal review, support commitments, and procurement. Do not mark a control complete from a questionnaire answer alone.
 
 ## Defaults you may assume
 
@@ -141,5 +165,6 @@ Say these in the plan. Do not ask unless the user already objected or the tree c
 - Development data isolated from production
 - Uploads private until the product clearly needs public files
 - The simplest host that fits the selected framework, when no host is configured yet
+- `https://www.example.com` as the public site URL, unless the user names another host or another subdomain replaces `www`
 
 Hosting is a recommendation with a one-sentence reason, recorded as an assumption. Do not silently choose a vendor the user already replaced. Do not make Amplify the default. Use the Amplify checklist only when Amplify is already configured or the user selects it.

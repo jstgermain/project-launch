@@ -1,8 +1,10 @@
 # Project memory
 
-Every repository is evaluated for a lightweight memory system. The goal is a one-minute briefing an assistant can trust, plus a place for current work, durable decisions, and reusable gotchas.
+Project memory is the operating record for the whole life of the project, from the first plan through launch. Later runs read it before they recommend or set anything up, and they write a decision when the plan changes.
 
-This is a checklist item named **Initialize or verify project memory**. Writing the files is implementation. In plan, audit, and readiness modes, record the gap. Create or edit memory files only when memory setup is requested or an authorized setup pass includes it.
+The goal is a one-minute briefing an assistant can trust, plus a place for current work, durable decisions, and reusable gotchas. The launch checklist tracks remaining work. Memory explains why the plan looks like this, including capabilities that were intentionally left out.
+
+Keep the checklist item named **Initialize or verify project memory**. Create the files on the first plan or the first setup when they do not exist. On a later run, update them when a decision or scope change is accepted. A read-only audit refreshes the checklist and, when these files already exist, corrects active status if this run changed what is current. Follow [lifecycle.md](lifecycle.md) when a changed plan becomes new setup work.
 
 ## Learn the repository first
 
@@ -18,7 +20,7 @@ Before writing memory files, read:
 - Hooks, skills, voice or writing rules, and Git rules
 - The last 20 commits, read-only
 
-Look especially for `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, `.cursor/rules/`, `.cursor/hooks/`, `.cursor/skills/`, `docs/PROJECT_STATUS.md`, `docs/now.md`, `docs/decisions.md`, and `docs/notes.md`.
+Look especially for `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, `.cursor/rules/`, `.cursor/hooks/`, `.cursor/skills/`, `docs/ARCHITECTURE.md`, `docs/PROJECT_STATUS.md`, `docs/now.md`, `docs/decisions.md`, and `docs/notes.md`.
 
 Never guess project facts. Never overwrite useful content. Integrate with the system that already exists.
 
@@ -51,6 +53,7 @@ Keep it short enough to read in about a minute. Preserve unique facts that are a
 Include:
 
 - A short description of what the project is
+- A pointer to the canonical architecture document
 - Real install, dev, test, and build commands, or a pointer to the README that owns them
 - Key conventions
 - Important gotchas, or a pointer to `docs/notes.md`
@@ -64,24 +67,32 @@ Do not paste secrets, customer data, or machine-specific paths.
 
 The main file must tell assistants and developers to:
 
-- Read current memory and status at the start of work
-- Update decisions when a decision is made
-- Update notes when a reusable gotcha is discovered
-- Keep the active-status file accurate
-- Update an existing project-status system through its own mechanism
-- Avoid a second source of truth
+- Read the operating record at the start of work: this file, active status, decisions, and the launch checklist
+- Read the canonical architecture document before changing a system boundary or integration
+- When a durable decision is made, record the date and why
+- When the product gains or drops a capability, update the launch checklist and the decision log before treating the new shape as settled
+- When a reusable gotcha appears, add it to the notes
+- Keep active status short and current. Rewrite it instead of appending history
+- If a broader status document exists, update that document and keep the active file as the narrow slice
+- Do not create a second system for the same facts
+- Do not set up a service the current plan leaves out
+- Keep architecture prose and Mermaid diagrams aligned with accepted changes
 
 Use this wording when you are adding the habit and the repo does not already state it:
 
 ```markdown
 ## Project memory
 
-At the start of a task, read this file and the active status.
+At the start of a task, read this file, the active status, the decision log, and the launch checklist.
+Read the canonical architecture document before changing a system boundary or integration.
 When a durable decision is made, record the date and why.
+When the product gains or drops a capability, update the checklist and the decision log before building the new piece.
 When a reusable gotcha appears, add it to the notes.
 Keep active status short and current. Rewrite it instead of appending history.
 If a broader status document exists, update that document and keep the active file as the narrow slice.
 Do not create a second system for the same facts.
+Do not set up a service the current plan leaves out.
+Keep architecture prose and Mermaid diagrams aligned with accepted changes.
 ```
 
 ## Active status

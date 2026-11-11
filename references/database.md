@@ -1,6 +1,8 @@
 # Database
 
-Load this only when the product stores relational data or already has a database. A marketing site without accounts does not get a database.
+Load this only when the current plan stores relational data, or the project already has a database. A marketing site, a static site, or a local-only app does not get a database while the plan has no shared or persistent server data.
+
+Set up Neon only in that case, and only when no database exists yet. If an earlier plan correctly left the database out, leave it unbuilt. When a later change adds accounts, shared records, or a production API, this run is the one that recommends the database, asks the questions that are still open, and adds the checklist section. See [lifecycle.md](lifecycle.md).
 
 ## Existing database
 
