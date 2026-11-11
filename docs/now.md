@@ -1,9 +1,7 @@
 # Now
 
-Current focus: publish version 1.4.0 with Flutter and native-store release automation, then verify skills.sh indexing and the global installation.
+Current focus: version 1.4.0 is published, indexed by skills.sh, and installed globally. Monitor the asynchronous security and reputation checks.
 
-- Validate the complete skill and local install preview.
-- Push the reviewed source to the public repository.
-- Verify skills.sh indexing and reinstall the published version globally.
+- Confirm the remaining skills.sh security and reputation checks finish successfully.
 
 The complete backlog and completion record lives in [`PROJECT_LAUNCH.md`](PROJECT_LAUNCH.md).

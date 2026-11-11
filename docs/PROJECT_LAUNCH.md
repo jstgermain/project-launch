@@ -121,8 +121,10 @@ Assumptions:
 
 - [x] Public installation target is `jstgermain/project-launch`; the source remote and visibility are verified before publication
 - [x] Final content review finds generic examples, no private source-project identity, and no machine-specific path
-- [ ] [NEEDS USER ACTION] Publish or push the reviewed release when ready
-- [ ] [NEEDS VERIFICATION] Confirm skills.sh indexing and all platform security/reputation checks pass
+- [x] Publish the reviewed version 1.4.0 release to the public `main` branch
+- [x] Confirm skills.sh indexes `jstgermain/project-launch/project-launch` with the updated Flutter-aware description
+- [x] Reinstall the published skill globally and verify the core files match the source checkout
+- [ ] [NEEDS VERIFICATION] Confirm all platform security/reputation checks pass after their asynchronous scans finish
 
 ## Post-publication maintenance
 
